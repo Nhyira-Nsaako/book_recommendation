@@ -1,0 +1,30 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+print("Picking another book after you're done with an amazing book can be very frustrating.")
+print("Don't worry!")
+print("Books Hub has you sorted. Search for your favourite genre or author and find your next great read.")
+print("Have fun reading!!!")
+def get_books_from_goodreads(genre_or_author):
+    url = f"https://www.goodreads.com/search?q={genre_or_author.replace(' ', '+')}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        book_titles = soup.find_all('a', class_='bookTitle')
+        if book_titles:
+            print(f"Recommended books for '{genre_or_author}':")
+            for title in book_titles[:5]:  # Displaying top 5 recommendations
+                print("-", title.get_text().strip())
+        else:
+            print("No books found for the given genre or author.")
+    else:
+        print("Failed to retrieve data from Goodreads.")
+
+if __name__ == "__main__":
+    while True:
+        user_input = input("Enter a genre or author name (to exit, type 'quit'): ")
+        if user_input.lower() == 'quit':
+            break
+        get_books_from_goodreads(user_input)
