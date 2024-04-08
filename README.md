@@ -23,7 +23,7 @@ To get started with Books Hub, follow these steps:
 ## Usage
 
 To run the program, execute the following command in your terminal or command prompt:
-python books_rec.py
+python book_rec.py
 
 Follow the prompts to search for books and discover your next read!
 
