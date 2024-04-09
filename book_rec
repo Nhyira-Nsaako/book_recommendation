@@ -1,30 +1,30 @@
 import requests
-from bs4 import BeautifulSoup
 
-
-print("Picking another book after you're done with an amazing book can be very frustrating.")
-print("Don't worry!")
-print("Books Hub has you sorted. Search for your favourite genre or author and find your next great read.")
-print("Have fun reading!!!")
-def get_books_from_goodreads(genre_or_author):
-    url = f"https://www.goodreads.com/search?q={genre_or_author.replace(' ', '+')}"
+def get_books_from_open_library(query):
+    url = f"http://openlibrary.org/search.json?q={query}"
     response = requests.get(url)
     
     if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        book_titles = soup.find_all('a', class_='bookTitle')
-        if book_titles:
-            print(f"Recommended books for '{genre_or_author}':")
-            for title in book_titles[:5]:  # Displaying top 5 recommendations
-                print("-", title.get_text().strip())
+        data = response.json()
+        docs = data.get('docs', [])
+        
+        if docs:
+            print(f"Recommended books for '{query}':")
+            for book in docs[:5]:  # Displaying top 5 recommendations
+                title = book.get('title', 'Unknown Title')
+                author = ", ".join(book.get('author_name', ['Unknown Author']))
+                print(f"- {title} by {author}")
         else:
-            print("No books found for the given genre or author.")
+            print("No books found for the given query.")
     else:
-        print("Failed to retrieve data from Goodreads.")
+        print("Failed to retrieve data from Open Library API.")
 
 if __name__ == "__main__":
+    print("FInd your next great read! Search for your favourite author or genre:")
+    
     while True:
-        user_input = input("Enter a genre or author name (to exit, type 'quit'): ")
+        user_input = input("Enter a book title or author name (type 'quit' to exit): ")
         if user_input.lower() == 'quit':
             break
-        get_books_from_goodreads(user_input)
+        get_books_from_open_library(user_input)
+
